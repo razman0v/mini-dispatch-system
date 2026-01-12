@@ -20,10 +20,12 @@ A robust automated testing framework for a logistics API simulation. This projec
 
 ## 🏗 Architecture
 
-[Test Runner: Playwright]  --->  [REST API: NestJS]  --->  [Database: PostgreSQL]
-          |                                                       ^
-          |                                                       |
-          └---------------- (Direct DB Verification) -------------┘
+```mermaid
+graph LR
+    A[Test Runner: Playwright] -->|HTTP Requests| B[REST API: NestJS]
+    B -->|SQL Queries| C[Database: PostgreSQL]
+    A -.->|Direct DB Verification| C
+```
 
 ## 🏃‍♂️ How to Run
 
@@ -62,6 +64,7 @@ npx playwright test
 
 ## Test Example
 
+```typescript
 test('should assign courier and update DB', async ({ request }) => {
   // 1. API Action
   await request.post('/orders/1/assign', { data: { courierId: 5 } });
@@ -70,3 +73,4 @@ test('should assign courier and update DB', async ({ request }) => {
   const order = await prisma.order.findUnique({ where: { id: 1 } });
   expect(order.status).toBe('delivery'); 
 });
+```
