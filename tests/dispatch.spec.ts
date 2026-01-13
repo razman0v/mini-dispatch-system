@@ -42,6 +42,29 @@ test.describe('Logistics Flow', () => {
     expect(orderInDb?.courierId).toBe(courier.id);
   });
 
+  test('Negative: Should NOT assign order if courier is busy', async ({ request }) => {
+   
+    const courierRes = await request.post('/couriers', { data: { name: 'Busy Bob' } });
+    const courier = await courierRes.json();
+    
+    const orderRes = await request.post('/orders', { data: { address: 'Nowhere', items: [] } });
+    const order = await orderRes.json();
+
+    await prisma.courier.update({
+        where: { id: courier.id },
+        data: { status: 'busy' } 
+    });
+
+    const failAssign = await request.post(`/orders/${order.id}/assign`, {
+        data: { courierId: courier.id }
+    });
+
+    expect(failAssign.status()).toBe(400);
+
+    const orderInDb = await prisma.order.findUnique({ where: { id: order.id } });
+    expect(orderInDb?.status).toBe('created');
+  });
+
   test.afterAll(async () => {
     await prisma.$disconnect();
   });
