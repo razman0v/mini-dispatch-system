@@ -31,7 +31,7 @@ graph LR
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/YOUR_USER/mini-dispatch-system.git](https://github.com/YOUR_USER/mini-dispatch-system.git)
+   git clone https://github.com/razman0v/mini-dispatch-system.git
    cd mini-dispatch-system
 
 ## Install dependencies:
